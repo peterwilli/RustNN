@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 //! An easy to use neural network library written in Rust.
 //!
 //! # Description
@@ -58,7 +59,13 @@
 extern crate rand;
 extern crate rustc_serialize;
 extern crate time;
+#[macro_use]
+extern crate log;
 
+#[cfg(not(feature = "std"))]
+extern crate no_std_compat as std;
+#[cfg(not(feature = "std"))]
+use std::prelude::v1::*;
 use HaltCondition::{ Epochs, MSE, Timer };
 use LearningMode::{ Incremental };
 use std::iter::{Zip, Enumerate};
@@ -307,7 +314,7 @@ impl NN {
                 // log error rate if necessary
                 match log_interval {
                     Some(interval) if epochs % interval == 0 => {
-                        println!("error rate: {}", training_error_rate);
+                        debug!("error rate: {}", training_error_rate);
                     },
                     _ => (),
                 }

@@ -3,8 +3,13 @@ extern crate time;
 
 use nn::{NN, HaltCondition, LearningMode};
 
+fn init() {
+    let _ = env_logger::builder().is_test(true).try_init();
+}
+
 #[test]
 fn xor_4layers() {
+    init();
     // create examples of the xor function
     let examples = [
         (vec![0f64, 0f64], vec![0f64]),
