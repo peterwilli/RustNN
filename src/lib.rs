@@ -66,7 +66,7 @@ use std::iter::{Enumerate, Zip};
 #[cfg(not(feature = "std"))]
 use std::prelude::v1::*;
 use std::slice;
-use time::{Duration, PreciseTime};
+use std::time::{Duration, Instant};
 use HaltCondition::{Epochs, Timer, MSE};
 use LearningMode::Incremental;
 
@@ -222,7 +222,7 @@ impl NN {
             for _ in 0..layer_size {
                 let mut node: Vec<f64> = Vec::new();
                 for _ in 0..prev_layer_size + 1 {
-                    let random_weight: f64 = rng.gen_range(-0.5f64, 0.5f64);
+                    let random_weight: f64 = rng.gen_range(-0.5f64..0.5f64);
                     node.push(random_weight);
                 }
                 node.shrink_to_fit();
@@ -312,7 +312,7 @@ impl NN {
         let mut prev_deltas = self.make_weights_tracker(0.0f64);
         let mut epochs = 0u32;
         let mut training_error_rate = 0f64;
-        let start_time = PreciseTime::now();
+        let start_time = Instant::now();
 
         loop {
             if epochs > 0 {
@@ -337,8 +337,8 @@ impl NN {
                         }
                     }
                     Timer(duration) => {
-                        let now = PreciseTime::now();
-                        if start_time.to(now) >= duration {
+                        let now = Instant::now();
+                        if start_time.duration_since(now) >= duration {
                             break;
                         }
                     }
